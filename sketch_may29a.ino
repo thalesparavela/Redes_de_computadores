@@ -25,7 +25,7 @@ void loop() {
 
   set_bank(0x03);
 
-  
+  //TESTE
   delay(10);
   
 }
