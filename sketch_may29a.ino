@@ -24,7 +24,7 @@ void setup() {
 void loop() {
 
   set_bank(0x03);
-  Serial.println(read_register(OPRCR,EREVID),HEX);
+
   
   delay(10);
   
