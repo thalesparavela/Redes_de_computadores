@@ -25,7 +25,7 @@ void loop() {
 
   set_bank(0x03);
 
-  //TESTE 232343kjhgughujio
+  //TESTE 232343kjhgughujioeqweqwrqwetwe
   delay(10);
   
 }
