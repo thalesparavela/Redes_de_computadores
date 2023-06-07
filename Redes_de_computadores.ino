@@ -22,8 +22,8 @@ void setup() {
 }
 
 void loop() {
-  blink_led_on();
-  delay(1000);
-  reset_enc();
-  delay(1000);
+delay(1000);
+blink_led_on();
+delay(1000);
+reset_enc();
 }
