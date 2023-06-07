@@ -22,10 +22,8 @@ void setup() {
 }
 
 void loop() {
-
-  set_bank(0x03);
-
-  //TESTE
-  delay(10);
-  
+  blink_led_on();
+  delay(1000);
+  reset_enc();
+  delay(1000);
 }

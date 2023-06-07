@@ -3,5 +3,5 @@
     "board": "arduino:avr:mega",
     "programmer": "avrisp",
     "port": "COM3",
-    "sketch": "sketch_may29a.ino"
+    "sketch": "Redes_de_computadores.ino"
 }

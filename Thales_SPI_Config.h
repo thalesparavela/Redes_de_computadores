@@ -130,6 +130,7 @@ void config_spi() {
   SPCR = 0b01010000;
 }
 
+
 // PARA OPERAÇÃO DE ESCRITA SÃO USADOS 02 (DOIS) BYTES, ASSIM, DEVE SER FEITO DOIS ENVIOS
 
 // ESCREVENDO O OPCODE + ADRESS (PRIMEIRO ENVIO)
@@ -140,6 +141,14 @@ void write_register(unsigned char opcode, unsigned char adress, unsigned char da
   SPDR = data;  // O DADO A SER ENVIADO (SEGUNDO ENVIO)
   while (!(SPSR & (1 << SPIF)));
   digitalWrite(CS, 1);  // ELEVANDO O NÍVEL DO CS PARA ENCERRAR A COMUNICAÇÃO
+}
+void reset_enc() {
+  digitalWrite(CS, 0);     // ABAIXANDO O NÍVEL DO CS BAIXO PARA INICIAR A COMUNICAÇÃO
+  SPDR = 0xFF;  // CONCATENANDO O OPCODE E ADRESS
+  while (!(SPSR & (1 << SPIF)));
+ 
+  digitalWrite(CS, 1);  // ELEVANDO O NÍVEL DO CS PARA ENCERRAR A COMUNICAÇÃO
+   delay(1);
 }
 
 // PARA OPERAÇÃO DE LEITURA SÃO USADOS 02 (DOIS) BYTES, ASSIM, DEVE SER FEITO DOIS ENVIOS
@@ -181,15 +190,8 @@ void clear_bank(unsigned char bank) {
 
 // OPERAÇÃO PARA SELECIONAR UM BANCO ESPECÍFICO - Página 31 [ENC 28J60]
 void set_bank(unsigned char bank) {
-  digitalWrite(CS, 0);  // ABAIXANDO O NÍVEL DO CS BAIXO PARA INICIAR A COMUNICAÇÃO
 
-  SPDR = (OPBFC | ECON1);  // LIMPANDO O BITs 1-0, ONDE CONTINHA O ANTIGO ENDEREÇO DO BANCO
-  while (!(SPSR & (1 << SPIF)));
-
-  SPDR = (0x03);  // A OPERAÇÃO OR ENTRE 0x02 e 0x01 resulta em 0b00000011
-  while (!(SPSR & (1 << SPIF)));
-
-  digitalWrite(CS, 1);  // ELEVANDO O NÍVEL DO CS BAIXO PARA ENCERRAR A COMUNICAÇÃO
+  clear_bank(bank);
 
   digitalWrite(CS, 0);  // ABAIXANDO O NÍVEL DO CS BAIXO PARA INICIAR A COMUNICAÇÃO
 
@@ -200,4 +202,8 @@ void set_bank(unsigned char bank) {
   while (!(SPSR & (1 << SPIF)));
 
   digitalWrite(CS, 1);  // ELEVANDO O NÍVEL DO CS BAIXO PARA ENCERRAR A COMUNICAÇÃO
+}
+void initialize_enc(){
+  // reset
+  
 }
