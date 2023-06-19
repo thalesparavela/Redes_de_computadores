@@ -24,6 +24,7 @@
 #define EDMASTH 0x11
 #define EDMANDL 0x12
 #define EDMANDH 0x13
+
 #define EDMADSTL 0x14
 #define EDMADSTH 0x15
 #define EDMACSL 0x16
@@ -142,14 +143,7 @@ void write_register(unsigned char opcode, unsigned char adress, unsigned char da
   while (!(SPSR & (1 << SPIF)));
   digitalWrite(CS, 1);  // ELEVANDO O NÍVEL DO CS PARA ENCERRAR A COMUNICAÇÃO
 }
-void reset_enc() {
-  digitalWrite(CS, 0);     // ABAIXANDO O NÍVEL DO CS BAIXO PARA INICIAR A COMUNICAÇÃO
-  SPDR = 0xFF;  // CONCATENANDO O OPCODE E ADRESS
-  while (!(SPSR & (1 << SPIF)));
- 
-  digitalWrite(CS, 1);  // ELEVANDO O NÍVEL DO CS PARA ENCERRAR A COMUNICAÇÃO
-   delay(1);
-}
+
 
 // PARA OPERAÇÃO DE LEITURA SÃO USADOS 02 (DOIS) BYTES, ASSIM, DEVE SER FEITO DOIS ENVIOS
 // ESCREVENDO O OPCODE + ADRESS (PRIMEIRO ENVIO)
@@ -203,7 +197,27 @@ void set_bank(unsigned char bank) {
 
   digitalWrite(CS, 1);  // ELEVANDO O NÍVEL DO CS BAIXO PARA ENCERRAR A COMUNICAÇÃO
 }
+void reset_enc() {
+  digitalWrite(CS, 0);     // ABAIXANDO O NÍVEL DO CS BAIXO PARA INICIAR A COMUNICAÇÃO
+  SPDR = 0xFF;  // CONCATENANDO O OPCODE E ADRESS
+  while (!(SPSR & (1 << SPIF)));
+ 
+  digitalWrite(CS, 1);  // ELEVANDO O NÍVEL DO CS PARA ENCERRAR A COMUNICAÇÃO
+   delay(1);
+}
 void initialize_enc(){
   // reset
+  reset_enc();
+  set_bank(0x02);
+  write_register(OPWCR,MACON1,0b00001101);//CONFIGURANDO MACON1 PARA OPERAÇAO FULL DUPLEX
+  
+  write_register(OPWCR,MACON3,0b11110011);//CONFIGURANDO MACON3 PARA QUE ADICIONE O PADDING DO PROTOCOLO ETHERNET E MAC || 0 b 1 1 1 1 0 0 1 1
+
+
+  // configfurando tamanho em binario.
+  // para um valor de 1518 bytes é necessario usar mais que 8 bits,
+  // por isso é utilizado o registrador alto e baixo
+  write_register(OPWCR,MAMXFLH,0b00000101);
+  write_register(OPWCR,MAMXFLL,0b11101110);
   
 }
